@@ -1,0 +1,52 @@
+{
+  "categories": [
+    { "id": "classics", "name": "Clássicos", "icon": "✦", "elements": [
+      { "id": "french", "name": "Francesinha", "asset": "/assets/elements/french.svg", "tags": ["francesinha", "linha"] },
+      { "id": "dots", "name": "Bolinha delicada", "asset": "/assets/elements/dots.svg", "tags": ["bolinha", "poá"] },
+      { "id": "star", "name": "Estrela", "asset": "/assets/elements/star.svg", "tags": ["estrela", "brilho"] },
+      { "id": "linework", "name": "Linhas finas", "asset": "/assets/elements/linework.svg", "tags": ["linhas", "minimalista"] }
+    ]},
+    { "id": "effects", "name": "Efeitos", "icon": "◌", "elements": [
+      { "id": "marble", "name": "Marmorizado", "asset": "/assets/elements/marble.svg", "tags": ["mármore", "efeito"] },
+      { "id": "sparkles", "name": "Brilhos", "asset": "/assets/elements/sparkle.svg", "tags": ["brilho", "luz"] }
+    ]},
+    { "id": "animals", "name": "Animais", "icon": "♡", "elements": [
+      { "id": "bunny", "name": "Coelhinho", "asset": "/assets/elements/bunny.svg", "tags": ["coelho", "animal"] },
+      { "id": "cat", "name": "Gatinho", "asset": "/assets/elements/cat.svg", "tags": ["gato", "animal"] },
+      { "id": "butterfly", "name": "Borboleta", "asset": "/assets/elements/butterfly.svg", "tags": ["borboleta", "animal"] },
+      { "id": "paw", "name": "Patinhas", "asset": "/assets/elements/paw.svg", "tags": ["pata", "animal"] }
+    ]},
+    { "id": "florals", "name": "Florais & Laços", "icon": "❀", "elements": [
+      { "id": "daisy", "name": "Margarida", "asset": "/assets/elements/flower.svg", "tags": ["flor", "margarida"] },
+      { "id": "camellia", "name": "Flor cheia", "asset": "/assets/elements/camellia.svg", "tags": ["flor", "camélia"] },
+      { "id": "leaves", "name": "Raminho", "asset": "/assets/elements/leaves.svg", "tags": ["folha", "ramo"] },
+      { "id": "bow", "name": "Laço", "asset": "/assets/elements/bow.svg", "tags": ["laço", "romântico"] }
+    ]},
+    { "id": "fruits", "name": "Frutas", "icon": "◉", "elements": [
+      { "id": "strawberry", "name": "Morango", "asset": "/assets/elements/strawberry.svg", "tags": ["morango", "fruta"] },
+      { "id": "cherries", "name": "Cerejas", "asset": "/assets/elements/cherries.svg", "tags": ["cereja", "fruta"] }
+    ]},
+    { "id": "seasons", "name": "Estações do Ano", "icon": "☼", "elements": [
+      { "id": "sun", "name": "Sol", "asset": "/assets/elements/sun.svg", "tags": ["verão", "sol"] },
+      { "id": "snowflake", "name": "Floco de neve", "asset": "/assets/elements/snowflake.svg", "tags": ["inverno", "neve"] }
+    ]},
+    { "id": "dates", "name": "Datas Comemorativas", "icon": "♡", "elements": [
+      { "id": "heart", "name": "Coração", "asset": "/assets/elements/heart.svg", "tags": ["amor", "coração"] },
+      { "id": "gift-star", "name": "Estrelinhas", "asset": "/assets/elements/sparkle.svg", "tags": ["comemoração", "brilho"] }
+    ]},
+    { "id": "films", "name": "Filmes", "icon": "▣", "elements": [
+      { "id": "film-reel", "name": "Claquete", "asset": "/assets/elements/film.svg", "tags": ["cinema", "filme"] }
+    ]},
+    { "id": "alternative", "name": "Alternativo", "icon": "☾", "elements": [
+      { "id": "moon", "name": "Lua crescente", "asset": "/assets/elements/moon.svg", "tags": ["lua", "místico"] },
+      { "id": "flame", "name": "Chama", "asset": "/assets/elements/flame.svg", "tags": ["chama", "alternativo"] }
+    ]},
+    { "id": "objects", "name": "Objetos", "icon": "⌂", "elements": [
+      { "id": "crown", "name": "Coroa", "asset": "/assets/elements/crown.svg", "tags": ["coroa", "objeto"] }
+    ]},
+    { "id": "countries", "name": "Países", "icon": "◎", "elements": [
+      { "id": "brazil", "name": "Brasil", "asset": "/assets/elements/brazil.svg", "tags": ["brasil", "país"] },
+      { "id": "france", "name": "França", "asset": "/assets/elements/france.svg", "tags": ["frança", "país"] }
+    ]}
+  ]
+}

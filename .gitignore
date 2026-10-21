@@ -1,0 +1,7 @@
+.env
+.env.*
+!.env.example
+!.env.xampp.example
+backend/target/
+frontend/node_modules/
+*.log

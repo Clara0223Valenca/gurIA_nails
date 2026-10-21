@@ -1,0 +1,12 @@
+{
+  "unit": "mm",
+  "source": "protótipo editável",
+  "presets": [
+    { "id": "p", "label": "P", "width": 8, "length": 12 },
+    { "id": "m", "label": "M", "width": 10, "length": 14 },
+    { "id": "g", "label": "G", "width": 12, "length": 16 }
+  ],
+  "formats": ["Quadrada", "Quadrada arredondada", "Oval", "Amendoada", "Stiletto", "Bailarina / Coffin"],
+  "print": { "paper": "A4", "width": 210, "height": 297, "dpi": 300, "horizontalMargin": 10, "verticalMargin": 10, "spacing": 4 },
+  "measurement": { "horizontalSafetyPercent": 6, "verticalSafetyPercent": 2 }
+}
