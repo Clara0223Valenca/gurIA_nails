@@ -383,5 +383,5 @@ Não coloque chaves reais em arquivos versionados, no frontend ou em commits. Os
 Alunas do curso de Análise e Desenvolvimento de Sistemas (ADS), Instituto Federal Farroupilha (IFFar).
 
 Projeto apresentado no **Bye Bye Boss 2026**.
-<img width="1254" height="1254" alt="Identidade visual GURIA nails" src="https://github.com/user-attachments/assets/8f7789ad-ad09-4c2c-9b17-22adf948b66c" /><img width="446" height="355" alt="projecao" src="https://github.com/user-attachments/assets/cd89622d-c926-4abb-a920-76e8bfbc7166" />
+<img width="1054" height="1054" alt="Identidade visual GURIA nails" src="https://github.com/user-attachments/assets/8f7789ad-ad09-4c2c-9b17-22adf948b66c" />
 
