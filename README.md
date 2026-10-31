@@ -133,5 +133,5 @@ Não coloque chaves reais em arquivos versionados, no frontend ou em commits. Os
 
 Projeto apresentado no **Bye Bye Boss 2026**.
 
-<img width="1054" height="1054" alt="Identidade visual GURIA nails" src="https://github.com/user-attachments/assets/8f7789ad-ad09-4c2c-9b17-22adf948b66c" />
+<img width="500" height="500" alt="Identidade visual GURIA nails" src="https://github.com/user-attachments/assets/8f7789ad-ad09-4c2c-9b17-22adf948b66c" />
 
