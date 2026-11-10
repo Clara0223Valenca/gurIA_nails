@@ -1,0 +1,8 @@
+diffusers==0.42.1
+transformers
+accelerate
+peft
+safetensors
+Pillow
+numpy
+rembg[cpu]==2.0.83

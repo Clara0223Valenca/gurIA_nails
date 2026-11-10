@@ -1,0 +1,15 @@
+{
+  "reviewed_at": "2026-11-07T19:24:51.2161018Z",
+  "total": 140,
+  "approved": 50,
+  "needs_correction": 24,
+  "separated": 66,
+  "effective_training_folder": "F:\\Downloads\\ads iffar\\Quarto Semestre\\app GurIA Nails\\ml\\flux2-klein-4b-lora\\dataset\\reviewed\\main_train_rgb",
+  "transparent_preservation_folder": "F:\\Downloads\\ads iffar\\Quarto Semestre\\app GurIA Nails\\ml\\flux2-klein-4b-lora\\dataset\\reviewed\\main_rgba",
+  "trigger": "naildecalstyle",
+  "trigger_occurrences_required_per_effective_caption": 1,
+  "backgrounds": {
+    "white": 43,
+    "light_gray": 7
+  }
+}

@@ -1,0 +1,775 @@
+{
+  "categories": [
+    {
+      "id": "classics",
+      "name": "Clássicos",
+      "icon": "✦",
+      "elements": []
+    },
+    {
+      "id": "effects",
+      "name": "Efeitos",
+      "icon": "◌",
+      "elements": []
+    },
+    {
+      "id": "animals",
+      "name": "Animais",
+      "icon": "♡",
+      "elements": [
+        {
+          "id": "animals-panda-01",
+          "name": "Panda",
+          "asset": "/assets/elements/user-imports/animals/panda.svg",
+          "tags": [
+            "panda",
+            "animais"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "cat",
+          "name": "Gato",
+          "asset": "/assets/elements/user-imports/animals/gato.svg",
+          "tags": [
+            "gato",
+            "animais"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "bunny",
+          "name": "Coelho",
+          "asset": "/assets/elements/user-imports/animals/coelho.svg",
+          "tags": [
+            "coelho",
+            "animais"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "animals-cachorro-04",
+          "name": "Cachorro",
+          "asset": "/assets/elements/user-imports/animals/cachorro.svg",
+          "tags": [
+            "cachorro",
+            "animais"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "butterfly",
+          "name": "Borboleta",
+          "asset": "/assets/elements/user-imports/animals/borboleta.svg",
+          "tags": [
+            "borboleta",
+            "animais"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "animals-capivara-24",
+          "name": "Capivara",
+          "asset": "/assets/elements/user-imports/animals/capivara.svg",
+          "tags": [
+            "capivara",
+            "animais"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "animals-arara-10",
+          "name": "Arara",
+          "asset": "/assets/elements/user-imports/animals/arara.svg",
+          "tags": [
+            "arara",
+            "animais"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "animals-calopsita-11",
+          "name": "Calopsita",
+          "asset": "/assets/elements/user-imports/animals/calopsita.svg",
+          "tags": [
+            "calopsita",
+            "animais"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "animals-cavalo-12",
+          "name": "Cavalo",
+          "asset": "/assets/elements/user-imports/animals/cavalo.svg",
+          "tags": [
+            "cavalo",
+            "animais"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "animals-joaninha-13",
+          "name": "Joaninha",
+          "asset": "/assets/elements/user-imports/animals/joaninha.svg",
+          "tags": [
+            "joaninha",
+            "animais"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "animals-vaca-14",
+          "name": "Vaca",
+          "asset": "/assets/elements/user-imports/animals/vaca.svg",
+          "tags": [
+            "vaca",
+            "animais"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        }
+      ]
+    },
+    {
+      "id": "florals",
+      "name": "Florais & Laços",
+      "icon": "❀",
+      "elements": [
+        {
+          "id": "florals-rosas-01",
+          "name": "Rosas",
+          "asset": "/assets/elements/user-imports/florals/rosa.svg",
+          "tags": [
+            "rosas",
+            "florais",
+            "lacos"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "florals-girassois-03",
+          "name": "Girassóis",
+          "asset": "/assets/elements/user-imports/florals/girassol.svg",
+          "tags": [
+            "girassois",
+            "florais",
+            "lacos"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "florals-flor-tradicional-37",
+          "name": "Flor tradicional",
+          "asset": "/assets/elements/user-imports/florals/flor-tradicional.svg",
+          "tags": [
+            "flor",
+            "tradicional",
+            "florais",
+            "lacos"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "florals-rosa-vermelha-38",
+          "name": "Rosa vermelha",
+          "asset": "/assets/elements/user-imports/florals/rosa-vermelha.svg",
+          "tags": [
+            "rosa",
+            "vermelha",
+            "florais",
+            "lacos"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-florals-folhas-cruzadas",
+          "name": "Folhas cruzadas",
+          "asset": "/assets/elements/user-imports/florals/import-florals-folhas-cruzadas.svg",
+          "tags": [
+            "folhas",
+            "ramo",
+            "florais"
+          ],
+          "monochrome": true,
+          "colors": {
+            "primary": "#60803a"
+          }
+        },
+        {
+          "id": "import-florals-raminho",
+          "name": "Raminho de folhas",
+          "asset": "/assets/elements/user-imports/florals/florals-raminho.svg",
+          "tags": [
+            "raminho",
+            "folhas",
+            "florais"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        }
+      ]
+    },
+    {
+      "id": "fruits",
+      "name": "Frutas",
+      "icon": "◉",
+      "elements": []
+    },
+    {
+      "id": "seasons",
+      "name": "Estações do Ano",
+      "icon": "☼",
+      "elements": [
+        {
+          "id": "import-seasons-abelha-primavera",
+          "name": "Abelha da primavera",
+          "asset": "/assets/elements/user-imports/seasons/seasons-abelha-primavera.svg",
+          "tags": [
+            "abelha",
+            "primavera",
+            "estacoes"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-seasons-abobora-outono",
+          "name": "Abóbora de outono",
+          "asset": "/assets/elements/user-imports/seasons/seasons-abobora-outono.svg",
+          "tags": [
+            "abobora",
+            "outono",
+            "estacoes"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-seasons-arco-iris-primavera",
+          "name": "Arco-íris de primavera",
+          "asset": "/assets/elements/user-imports/seasons/seasons-arco-iris-primavera.svg",
+          "tags": [
+            "arco iris",
+            "primavera",
+            "estacoes"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-seasons-chinelo-verao",
+          "name": "Chinelo de verão",
+          "asset": "/assets/elements/user-imports/seasons/seasons-chinelo-verao.svg",
+          "tags": [
+            "chinelo",
+            "verao",
+            "estacoes"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-seasons-cogumelo-outono",
+          "name": "Cogumelo de outono",
+          "asset": "/assets/elements/user-imports/seasons/seasons-cogumelo-outono.svg",
+          "tags": [
+            "cogumelo",
+            "outono",
+            "estacoes"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-seasons-coqueiro-verao",
+          "name": "Coqueiro de verão",
+          "asset": "/assets/elements/user-imports/seasons/seasons-coqueiro-verao.svg",
+          "tags": [
+            "coqueiro",
+            "verao",
+            "estacoes"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-seasons-flamingo-boia",
+          "name": "Flamingo com boia",
+          "asset": "/assets/elements/user-imports/seasons/seasons-flamingo-boia.svg",
+          "tags": [
+            "flamingo",
+            "boia",
+            "verao"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-seasons-floco-neve",
+          "name": "Floco de neve",
+          "asset": "/assets/elements/user-imports/seasons/import-seasons-floco-neve.svg",
+          "tags": [
+            "floco",
+            "neve",
+            "inverno"
+          ],
+          "monochrome": true,
+          "colors": {
+            "primary": "#669ed6"
+          }
+        },
+        {
+          "id": "import-seasons-folha-outono",
+          "name": "Folha de outono",
+          "asset": "/assets/elements/user-imports/seasons/seasons-folha-outono.svg",
+          "tags": [
+            "folha",
+            "outono",
+            "estacoes"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-seasons-folhas-outono",
+          "name": "Folhas de outono",
+          "asset": "/assets/elements/user-imports/seasons/seasons-folhas-outono.svg",
+          "tags": [
+            "folhas",
+            "outono",
+            "estacoes"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-seasons-ondas-verao",
+          "name": "Ondas de verão",
+          "asset": "/assets/elements/user-imports/seasons/import-seasons-ondas-verao.svg",
+          "tags": [
+            "ondas",
+            "verao",
+            "estacoes"
+          ],
+          "monochrome": true,
+          "colors": {
+            "primary": "#4075b6"
+          }
+        },
+        {
+          "id": "import-seasons-pinheiro-inverno",
+          "name": "Pinheiro de inverno",
+          "asset": "/assets/elements/user-imports/seasons/seasons-pinheiro-inverno.svg",
+          "tags": [
+            "pinheiro",
+            "inverno",
+            "estacoes"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-seasons-sol-verao",
+          "name": "Sol de verão",
+          "asset": "/assets/elements/user-imports/seasons/seasons-sol-verao.svg",
+          "tags": [
+            "sol",
+            "verao",
+            "estacoes"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-seasons-sorvete-verao",
+          "name": "Sorvete de verão",
+          "asset": "/assets/elements/user-imports/seasons/seasons-sorvete-verao.svg",
+          "tags": [
+            "sorvete",
+            "verao",
+            "estacoes"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-seasons-touca-inverno",
+          "name": "Gorro de inverno",
+          "asset": "/assets/elements/user-imports/seasons/seasons-touca-inverno.svg",
+          "tags": [
+            "gorro",
+            "inverno",
+            "estacoes"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        }
+      ]
+    },
+    {
+      "id": "dates",
+      "name": "Datas Comemorativas",
+      "icon": "♡",
+      "elements": [
+        {
+          "id": "import-dates-abobora-halloween",
+          "name": "Abóbora de Halloween",
+          "asset": "/assets/elements/user-imports/dates/dates-abobora-halloween.svg",
+          "tags": [
+            "abobora",
+            "halloween",
+            "datas comemorativas"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-dates-arco-cupido",
+          "name": "Arco do Cupido",
+          "asset": "/assets/elements/user-imports/dates/import-dates-arco-cupido.svg",
+          "tags": [
+            "arco",
+            "cupido",
+            "namorados"
+          ],
+          "monochrome": true,
+          "colors": {
+            "primary": "#c90011"
+          }
+        },
+        {
+          "id": "import-dates-arvore-natal",
+          "name": "Árvore de Natal",
+          "asset": "/assets/elements/user-imports/dates/dates-arvore-natal.svg",
+          "tags": [
+            "arvore",
+            "natal",
+            "datas comemorativas"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-dates-coelho-pascoa",
+          "name": "Coelho de Páscoa",
+          "asset": "/assets/elements/user-imports/dates/dates-coelho-pascoa.svg",
+          "tags": [
+            "coelho",
+            "pascoa",
+            "datas comemorativas"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-dates-flor-natal",
+          "name": "Flor de Natal",
+          "asset": "/assets/elements/user-imports/dates/dates-flor-natal.svg",
+          "tags": [
+            "flor",
+            "natal",
+            "datas comemorativas"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-dates-fogos-ano-novo",
+          "name": "Fogos de artifício",
+          "asset": "/assets/elements/user-imports/dates/dates-fogos-ano-novo.svg",
+          "tags": [
+            "fogos",
+            "ano novo",
+            "datas comemorativas"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-dates-gatinhos-namorados",
+          "name": "Gatinhos apaixonados",
+          "asset": "/assets/elements/user-imports/dates/dates-gatinhos-namorados.svg",
+          "tags": [
+            "gatinhos",
+            "namorados",
+            "datas comemorativas"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-dates-ovos-pascoa",
+          "name": "Ovos de Páscoa",
+          "asset": "/assets/elements/user-imports/dates/dates-ovos-pascoa.svg",
+          "tags": [
+            "ovos",
+            "pascoa",
+            "datas comemorativas"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-dates-touca-papai-noel",
+          "name": "Touca de Papai Noel",
+          "asset": "/assets/elements/user-imports/dates/dates-touca-papai-noel.svg",
+          "tags": [
+            "touca",
+            "papai noel",
+            "natal"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        }
+      ]
+    },
+    {
+      "id": "films",
+      "name": "Filmes",
+      "icon": "▣",
+      "elements": []
+    },
+    {
+      "id": "alternative",
+      "name": "Alternativo",
+      "icon": "☾",
+      "elements": [
+        {
+          "id": "import-alternative-borboleta-dark",
+          "name": "Borboleta dark",
+          "asset": "/assets/elements/user-imports/alternative/alternative-borboleta-dark.svg",
+          "tags": [
+            "borboleta",
+            "dark",
+            "alternativo"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-alternative-brilho",
+          "name": "Brilho",
+          "asset": "/assets/elements/user-imports/alternative/import-alternative-brilho.svg",
+          "tags": [
+            "brilho",
+            "estrela",
+            "alternativo"
+          ],
+          "monochrome": true,
+          "colors": {
+            "primary": "#70442e"
+          }
+        },
+        {
+          "id": "import-alternative-caveira-espinhos",
+          "name": "Caveira com espinhos",
+          "asset": "/assets/elements/user-imports/alternative/alternative-caveira-espinhos.svg",
+          "tags": [
+            "caveira",
+            "espinhos",
+            "alternativo"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-alternative-coracao-gotico",
+          "name": "Coração gótico",
+          "asset": "/assets/elements/user-imports/alternative/import-alternative-coracao-gotico.svg",
+          "tags": [
+            "coracao",
+            "gotico",
+            "alternativo"
+          ],
+          "monochrome": true,
+          "colors": {
+            "primary": "#342a37"
+          }
+        },
+        {
+          "id": "import-alternative-cruz-gotica",
+          "name": "Cruz gótica",
+          "asset": "/assets/elements/user-imports/alternative/import-alternative-cruz-gotica.svg",
+          "tags": [
+            "cruz",
+            "gotica",
+            "alternativo"
+          ],
+          "monochrome": true,
+          "colors": {
+            "primary": "#342a37"
+          }
+        },
+        {
+          "id": "import-alternative-estatua",
+          "name": "Estátua",
+          "asset": "/assets/elements/user-imports/alternative/alternative-estatua.svg",
+          "tags": [
+            "estatua",
+            "alternativo"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-alternative-laco-renda",
+          "name": "Laço de renda",
+          "asset": "/assets/elements/user-imports/alternative/alternative-laco-renda.svg",
+          "tags": [
+            "laco",
+            "renda",
+            "alternativo"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-alternative-mao-sangue",
+          "name": "Mão com sangue",
+          "asset": "/assets/elements/user-imports/alternative/alternative-mao-sangue.svg",
+          "tags": [
+            "mao",
+            "sangue",
+            "alternativo"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-alternative-rosa-lua",
+          "name": "Rosa e lua",
+          "asset": "/assets/elements/user-imports/alternative/import-alternative-rosa-lua.svg",
+          "tags": [
+            "rosa",
+            "lua",
+            "alternativo"
+          ],
+          "monochrome": true,
+          "colors": {
+            "primary": "#342a37"
+          }
+        },
+        {
+          "id": "import-alternative-velas-goticas",
+          "name": "Velas góticas",
+          "asset": "/assets/elements/user-imports/alternative/alternative-velas-goticas.svg",
+          "tags": [
+            "velas",
+            "goticas",
+            "alternativo"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        }
+      ]
+    },
+    {
+      "id": "objects",
+      "name": "Objetos",
+      "icon": "⌂",
+      "elements": [
+        {
+          "id": "import-objects-coroa",
+          "name": "Coroa",
+          "asset": "/assets/elements/user-imports/objects/objects-coroa.svg",
+          "tags": [
+            "coroa",
+            "objetos"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-objects-cuia-chimarrao",
+          "name": "Cuia de chimarrão",
+          "asset": "/assets/elements/user-imports/objects/objects-cuia-chimarrao.svg",
+          "tags": [
+            "cuia",
+            "chimarrao",
+            "gaucho"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-objects-espelho",
+          "name": "Espelho",
+          "asset": "/assets/elements/user-imports/objects/objects-espelho.svg",
+          "tags": [
+            "espelho",
+            "objetos"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-objects-guitarra",
+          "name": "Guitarra",
+          "asset": "/assets/elements/user-imports/objects/objects-guitarra.svg",
+          "tags": [
+            "guitarra",
+            "musica",
+            "objetos"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-objects-maquiagem",
+          "name": "Maquiagem",
+          "asset": "/assets/elements/user-imports/objects/objects-maquiagem.svg",
+          "tags": [
+            "maquiagem",
+            "beleza",
+            "objetos"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-objects-perfume",
+          "name": "Perfume",
+          "asset": "/assets/elements/user-imports/objects/objects-perfume.svg",
+          "tags": [
+            "perfume",
+            "objetos"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        },
+        {
+          "id": "import-objects-relogio-pulso",
+          "name": "Relógio de pulso",
+          "asset": "/assets/elements/user-imports/objects/objects-relogio-pulso.svg",
+          "tags": [
+            "relogio",
+            "pulso",
+            "objetos"
+          ],
+          "renderAsImage": true,
+          "aspectRatio": 1
+        }
+      ]
+    },
+    {
+      "id": "countries",
+      "name": "Países",
+      "icon": "◎",
+      "elements": []
+    }
+  ]
+}

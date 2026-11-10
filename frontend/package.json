@@ -1,0 +1,9 @@
+{
+  "name": "guria-nails-frontend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node ../scripts/dev-server.mjs",
+    "test": "node --test test/*.test.mjs"
+  }
+}

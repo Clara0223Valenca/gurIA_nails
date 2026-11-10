@@ -1,0 +1,71 @@
+---
+job: extension
+config:
+  name: "guria_nails_flux2_klein_4b_reviewed_v2"
+  process:
+    - type: "diffusion_trainer"
+      training_folder: "/workspace/guria-nails-flux2-klein/output"
+      device: "cuda:0"
+      trigger_word: "naildecalstyle"
+      performance_log_every: 100
+      network:
+        type: "lora"
+        linear: 64
+        linear_alpha: 32
+      save:
+        dtype: "bf16"
+        save_every: 250
+        max_step_saves_to_keep: 8
+        push_to_hub: false
+      datasets:
+        - folder_path: "/workspace/guria-nails-flux2-klein/dataset/reviewed/main_train_rgb"
+          caption_ext: "txt"
+          caption_dropout_rate: 0.05
+          shuffle_tokens: false
+          cache_latents_to_disk: true
+          resolution: [512, 768, 1024]
+      train:
+        batch_size: 1
+        steps: 1600
+        gradient_accumulation_steps: 2
+        train_unet: true
+        train_text_encoder: false
+        gradient_checkpointing: true
+        noise_scheduler: "flowmatch"
+        timestep_type: "weighted"
+        content_or_style: "balanced"
+        optimizer: "adamw8bit"
+        lr: 0.0001
+        dtype: "bf16"
+      model:
+        arch: "flux2_klein_4b"
+        name_or_path: "black-forest-labs/FLUX.2-klein-base-4B"
+        quantize: true
+        quantize_te: true
+        qtype: "qfloat8"
+        qtype_te: "qfloat8"
+        low_vram: true
+      sample:
+        sampler: "flowmatch"
+        sample_every: 250
+        sample_start_step: 0
+        width: 768
+        height: 768
+        prompts:
+          - "naildecalstyle, flat 2D illustration of three cute black cats arranged side by side, isolated on a solid white background."
+          - "naildecalstyle, flat 2D illustration of a blue butterfly with tiny floral details, isolated on a solid white background."
+          - "naildecalstyle, flat 2D illustration of a yellow crescent moon surrounded by five small stars, isolated on a solid white background."
+          - "naildecalstyle, flat 2D illustration of two purple mushrooms with white spots, isolated on a solid white background."
+          - "naildecalstyle, flat 2D illustration of a turquoise sea turtle viewed from above, isolated on a solid white background."
+          - "naildecalstyle, flat 2D illustration of a red strawberry with simple green leaves, isolated on a solid white background."
+        neg: "photograph, 3D render, realistic hand, fingers, realistic fingernails, manicure photo, reflection, drop shadow, scene, watermark, signature, text"
+        seed: 42
+        walk_seed: false
+        guidance_scale: 4.0
+        sample_steps: 25
+meta:
+  name: "[name]"
+  version: "1.0"
+  dataset: "GurIA Nails reviewed main 50"
+  trigger: "naildecalstyle"
+  training_model: "black-forest-labs/FLUX.2-klein-base-4B"

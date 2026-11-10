@@ -1,0 +1,16 @@
+{
+  "title": "GurIA Nails FLUX2 Klein Dataset",
+  "subtitle": "Paired images and captions for a private FLUX.2 Klein 4B LoRA experiment",
+  "description": "Private reviewed dataset with 50 effective RGB image-caption pairs, 50 preserved RGBA originals, hashes, visual decisions and audit flags. Source rights are not yet verified; see DATASET_CARD.md before any publication.",
+  "id": "__KAGGLE_USER__/guria-nails-flux2-klein",
+  "licenses": [
+    {
+      "name": "other"
+    }
+  ],
+  "keywords": [
+    "computer vision",
+    "art",
+    "image generation"
+  ]
+}
