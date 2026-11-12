@@ -19,11 +19,21 @@ CREATE TABLE event_access_tokens (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 ALTER TABLE projects
-  ADD COLUMN event_session_id CHAR(36) NULL AFTER owner_id,
-  ADD CONSTRAINT fk_projects_event_session FOREIGN KEY (event_session_id) REFERENCES event_sessions(id),
+  ADD COLUMN event_session_id CHAR(36) NULL AFTER owner_id;
+
+ALTER TABLE projects
+  ADD CONSTRAINT fk_projects_event_session
+  FOREIGN KEY (event_session_id) REFERENCES event_sessions(id);
+
+ALTER TABLE projects
   ADD INDEX idx_projects_event_session_updated (event_session_id, updated_at);
 
 ALTER TABLE ai_generations
-  ADD COLUMN event_session_id CHAR(36) NULL AFTER owner_id,
-  ADD CONSTRAINT fk_ai_event_session FOREIGN KEY (event_session_id) REFERENCES event_sessions(id),
+  ADD COLUMN event_session_id CHAR(36) NULL AFTER owner_id;
+
+ALTER TABLE ai_generations
+  ADD CONSTRAINT fk_ai_event_session
+  FOREIGN KEY (event_session_id) REFERENCES event_sessions(id);
+
+ALTER TABLE ai_generations
   ADD INDEX idx_ai_event_session_created (event_session_id, created_at);
