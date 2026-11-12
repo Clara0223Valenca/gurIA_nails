@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { clampLayer, coverLayerToBoard, layerWidthLimit, multiSheetLayout, resizeLayerToWidth, sheetLayout } from '../src/geometry.js';
-import { blankProject, deleteNailMeasurement, loadNailMeasurements, upsertNailMeasurement } from '../src/store.js';
+import { blankProject, clearSessionStorage, deleteNailMeasurement, loadNailMeasurements, loadProjects, saveProjects, setStorageScope, upsertNailMeasurement } from '../src/store.js';
 import { artworkSvg, renderEditor } from '../src/editor.js';
 import { createArtworkPreviewUrl } from '../src/print.js';
 
@@ -92,7 +92,8 @@ test('nail measurements can be saved, edited, and removed from local storage', (
     configurable: true,
     value: {
       getItem: (key) => values.get(key) ?? null,
-      setItem: (key, value) => values.set(key, String(value))
+      setItem: (key, value) => values.set(key, String(value)),
+      removeItem: (key) => values.delete(key)
     }
   });
   try {
@@ -105,6 +106,36 @@ test('nail measurements can be saved, edited, and removed from local storage', (
     assert.deepEqual(deleteNailMeasurement(first[0].id, edited), []);
     assert.throws(() => upsertNailMeasurement({ name: 'Inválida', widthMm: 41, lengthMm: 10 }), /largura/i);
   } finally {
+    if (descriptor) Object.defineProperty(globalThis, 'localStorage', descriptor);
+    else delete globalThis.localStorage;
+  }
+});
+
+test('project caches stay isolated between anonymous event sessions', () => {
+  const descriptor = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
+  const values = new Map();
+  Object.defineProperty(globalThis, 'localStorage', {
+    configurable: true,
+    value: {
+      getItem: (key) => values.get(key) ?? null,
+      setItem: (key, value) => values.set(key, String(value)),
+      removeItem: (key) => values.delete(key)
+    }
+  });
+  try {
+    setStorageScope('session-a');
+    saveProjects([blankProject('Projeto A')]);
+    setStorageScope('session-b');
+    assert.deepEqual(loadProjects(), []);
+    saveProjects([blankProject('Projeto B')]);
+    setStorageScope('session-a');
+    assert.equal(loadProjects()[0].name, 'Projeto A');
+    clearSessionStorage();
+    assert.deepEqual(loadProjects(), []);
+    setStorageScope('session-b');
+    assert.equal(loadProjects()[0].name, 'Projeto B');
+  } finally {
+    setStorageScope(null);
     if (descriptor) Object.defineProperty(globalThis, 'localStorage', descriptor);
     else delete globalThis.localStorage;
   }
@@ -217,6 +248,17 @@ test('the home wordmark is a compact PNG with transparency', async () => {
   assert.equal(logo[25], 6);
   assert.ok(logo.readUInt32BE(16) < 600);
   assert.ok(logo.readUInt32BE(20) < 650);
+});
+
+test('the Instagram button uses the supplied safe local logo', async () => {
+  const [main, logo] = await Promise.all([
+    readFile(new URL('../src/main.js', import.meta.url), 'utf8'),
+    readFile(new URL('../assets/logo-instagram.svg', import.meta.url), 'utf8')
+  ]);
+  assert.match(main, /assets\/logo-instagram\.svg/);
+  assert.match(main, /https:\/\/www\.instagram\.com\/guria\.nails\//);
+  assert.match(logo, /^<svg\b/);
+  assert.doesNotMatch(logo, /<(?:script|foreignObject)\b|\bon\w+\s*=|\b(?:href|xlink:href)\s*=|javascript:/i);
 });
 
 test('transparent background keeps its color control and uploaded art can fill the nail', async () => {

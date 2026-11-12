@@ -14,6 +14,8 @@ WORKDIR /app
 
 COPY --from=build /app/target/guria-nails-api-*.jar app.jar
 
+ENV SERVER_ADDRESS=0.0.0.0
+
 EXPOSE 10000
 
 ENTRYPOINT ["java", "-XX:MaxRAMPercentage=70.0", "-jar", "app.jar"]

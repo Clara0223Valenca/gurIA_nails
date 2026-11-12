@@ -1,0 +1,8 @@
+runpod==2.2.1
+diffusers==0.42.1
+transformers==5.22.2
+accelerate==1.15.0
+peft==0.21.2
+safetensors==0.8.0
+Pillow==12.0.0
+sentencepiece==0.2.1

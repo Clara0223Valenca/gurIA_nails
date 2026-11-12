@@ -16,6 +16,8 @@ public class AiGenerationEntity {
     private String id;
     @Column(name = "operation", nullable = false, length = 16)
     private String operation;
+    @Column(name = "event_session_id", columnDefinition = "CHAR(36)", length = 36)
+    private String eventSessionId;
     @Column(name = "provider_name", nullable = false, length = 100)
     private String providerName;
     @Column(name = "model_name", nullable = false, length = 100)
@@ -33,8 +35,9 @@ public class AiGenerationEntity {
 
     protected AiGenerationEntity() {}
 
-    public AiGenerationEntity(String operation, String providerName, String modelName, String promptText, String status, int resultCount, String errorCode) {
+    public AiGenerationEntity(String eventSessionId, String operation, String providerName, String modelName, String promptText, String status, int resultCount, String errorCode) {
         this.id = UUID.randomUUID().toString();
+        this.eventSessionId = eventSessionId;
         this.operation = operation;
         this.providerName = providerName;
         this.modelName = modelName;

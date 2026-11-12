@@ -24,9 +24,9 @@ O GurIA Nails reúne editor visual, biblioteca de elementos, geração assistida
 - **Ajuste da arte na unha:** permite preencher a área da unha ou encaixar a imagem inteira, escolher fundo transparente ou colorido e ajustar formato e medidas.
 - **Medidor aproximado:** estima largura e comprimento usando uma foto ou câmera compatível e uma referência de régua. Confira as medidas antes de imprimir.
 - **GurIA:** envia descrições para gerar imagens e permite solicitar o aperfeiçoamento de uma arte pelo serviço de IA configurado.
-- **Projetos:** salva rascunhos neste navegador, organiza favoritos e permite renomear, duplicar, excluir, importar e exportar projetos em backup JSON.
+- **Projetos:** salva rascunhos na sessão anônima do evento, organiza favoritos e permite renomear, duplicar, excluir, importar e exportar projetos em backup JSON.
 - **Cartela para impressão:** combina designs do editor, de projetos salvos e da GurIA. Cada arte tem quantidade e medidas próprias; o cabeçalho com texto e/ou logo é opcional. Exporta PNG ou abre a impressão do navegador, que também pode salvar em PDF.
-- **Sincronização local:** quando o backend e o banco estão disponíveis, os projetos podem ser sincronizados pela API.
+- **Sessão protegida:** o backend e o banco isolam os projetos por visitante; o navegador mantém apenas um cache associado à sessão atual.
 
 ## Clientes e modelo de negócio proposto
 
@@ -60,7 +60,7 @@ O comando usa apenas o Node.js e imprime as quantidades geradas por categoria.
 
 ### Pré-requisitos
 
-Para abrir o editor, instale o **Node.js 20 ou superior**. O editor funciona sem banco de dados.
+Para abrir a interface, instale o **Node.js 20 ou superior**. O Modo Evento exige também o backend e o banco de dados para criar e recuperar sessões isoladas.
 
 Para executar também a API, instale o **JDK 21**, o **Maven 3.6.3 ou superior** e tenha um banco MySQL ou MariaDB local. Os passos abaixo usam o XAMPP como exemplo.
 
@@ -81,9 +81,9 @@ Na pasta do projeto, inicie o servidor local:
 node .\scripts\dev-server.mjs
 ~~~
 
-Abra [http://127.0.0.1:4173](http://127.0.0.1:4173). Para apenas conhecer o editor, este passo é suficiente. Sem API, banco e chave de IA, os recursos de edição, projetos locais e exportação continuam disponíveis; geração de imagens e sincronização com o banco ficam indisponíveis.
+Abra [http://127.0.0.1:4173](http://127.0.0.1:4173). A tela inicial será exibida, mas é necessário iniciar também a API para validar o código do evento e entrar no editor.
 
-### 3. Iniciar a API com XAMPP e MariaDB (opcional)
+### 3. Iniciar a API com XAMPP e MariaDB
 
 1. Abra o XAMPP Control Panel e inicie **MySQL**. No XAMPP, esse serviço usa MariaDB. Confira a porta indicada no painel; o arquivo de exemplo deste projeto usa a porta `3307`.
 2. No phpMyAdmin, abra a aba **SQL** e crie um banco e um usuário local para o aplicativo:
@@ -101,7 +101,7 @@ FLUSH PRIVILEGES;
 if (-not (Test-Path .env.xampp)) { Copy-Item .env.xampp.example .env.xampp }
 ~~~
 
-Edite `.env.xampp` e ajuste `DB_PASSWORD` para a mesma senha criada no SQL. Se o XAMPP usar outra porta, ajuste também a porta em `DB_URL`. Este arquivo contém configurações locais e não deve ser enviado ao GitHub.
+Edite `.env.xampp`, ajuste `DB_PASSWORD` para a mesma senha criada no SQL e defina `GURIA_EVENT_CODE`. Se o XAMPP usar outra porta, ajuste também a porta em `DB_URL`. Este arquivo contém configurações locais e não deve ser enviado ao GitHub.
 
 4. Inicie a API:
 
@@ -110,6 +110,33 @@ Edite `.env.xampp` e ajuste `DB_PASSWORD` para a mesma senha criada no SQL. Se o
 ~~~
 
 Na primeira execução, o Flyway cria as tabelas. A API local fica em [http://localhost:8080/api](http://localhost:8080/api). Mantenha o servidor da interface aberto em outro terminal.
+
+### Modo Evento
+
+O código compartilhado autoriza a criação de uma sessão anônima individual. O backend devolve um token temporário e um código de recuperação `GN-XXXX-XXXX-XXXX`; somente hashes desses segredos ficam no banco. Cada consulta, alteração e exclusão de projeto é filtrada pela sessão autenticada.
+
+~~~dotenv
+GURIA_EVENT_CODE=GURIA26
+GURIA_EVENT_ACCESS_TTL=PT24H
+GURIA_EVENT_AI_LIMIT=10
+GURIA_EVENT_PROJECT_LIMIT=20
+~~~
+
+O token de acesso vence após 24 horas e é renovado usando o código de recuperação guardado no navegador. Os projetos e a sessão não são apagados quando o token vence. O botão **Começar nova sessão** desconecta o dispositivo sem excluir os projetos anteriores; para voltar a eles, é indispensável informar o código de recuperação.
+
+No Render, cadastre essas variáveis na área **Environment** do serviço backend. Não coloque `GURIA_EVENT_CODE` no serviço do frontend. Trocar ou remover o código impede novas sessões; as sessões existentes ainda podem ser recuperadas pelos códigos individuais.
+
+Para produção, prefira dois usuários de banco: `DB_USER` com apenas `SELECT`, `INSERT`, `UPDATE` e `DELETE` no schema da aplicação; e `DB_MIGRATION_USER` com as permissões de criação e alteração necessárias ao Flyway. Configure também `DB_MIGRATION_PASSWORD`. Se essas duas variáveis não forem informadas, o Flyway reutiliza `DB_USER` por compatibilidade com o ambiente local.
+
+O frontend oferece copiar, baixar um lembrete e, em navegadores compatíveis e contexto HTTPS, solicitar o armazenamento no gerenciador de credenciais. Como o suporte varia entre navegadores, o botão **Copiar** permanece como alternativa principal.
+
+### Publicar no Render
+
+O arquivo `render.yaml` prepara dois Web Services: `guria-nails-api`, construído pelo Dockerfile do backend, e `guria-nails-web`, que entrega a interface e gera `app-config.json` no servidor. Ao criar o Blueprint no Render, preencha os valores marcados como secretos.
+
+No backend, use uma instância MySQL/MariaDB acessível pelo Render e informe `DB_URL` no formato JDBC (`jdbc:mariadb://host:porta/guria_nails`). Preencha também `DB_USER`, `DB_PASSWORD`, `DB_MIGRATION_USER`, `DB_MIGRATION_PASSWORD`, `GURIA_EVENT_CODE`, `GURIA_FRONTEND_ORIGIN` com a URL pública exata do frontend e `GURIA_AI_API_KEY`. Não use `root` no banco de produção.
+
+No frontend, defina `GURIA_API_BASE_URL` com a URL pública do backend terminada em `/api`, por exemplo `https://guria-nails-api.onrender.com/api`. O servidor respeita `PORT` automaticamente e escuta em `0.0.0.0` no Render. Depois do primeiro deploy, confirme `/api/health`, a entrada pelo código do evento e a criação de um projeto antes de divulgar o QR Code.
 
 ### 4. Ativar a geração de imagens com IA (opcional)
 
@@ -125,12 +152,13 @@ Não coloque chaves reais em arquivos versionados, no frontend ou em commits. Os
 
 O pacote completo para treinar o FLUX.2 [klein] 4B no RunPod está em [`ml/flux2-klein-4b-lora`](ml/flux2-klein-4b-lora/README.md). Ele inclui 140 PNGs transparentes em resolução original, uma cópia RGB técnica para o treinador, captions, manifests Kaggle/Hugging Face, auditoria, validação, configurações para GPU de 24 GB e um ZIP pronto para envio.
 
-O treino usa `black-forest-labs/FLUX.2-klein-base-4B`; a inferência rápida usa o checkpoint distilled `black-forest-labs/FLUX.2-klein-4B` com a LoRA resultante. O trigger do dataset é `GUR1A_NAILS`.
+O treino usa `black-forest-labs/FLUX.2-klein-base-4B`; a inferência rápida usa o checkpoint distilled `black-forest-labs/FLUX.2-klein-4B` com a LoRA resultante. O trigger efetivo do conjunto revisado é `naildecalstyle`.
 
 ## Limites do protótipo
 
-- O projeto não implementa cadastro, login, contas de usuário, assinaturas, pagamentos ou os planos comerciais descritos acima.
-- Os projetos ficam no armazenamento deste navegador. A API local permite sincronização com banco, mas ainda não há isolamento de dados entre usuários; não exponha o backend publicamente.
+- O projeto não implementa cadastro nominal, contas tradicionais, assinaturas, pagamentos ou os planos comerciais descritos acima; o acesso usa sessões anônimas do evento.
+- Sem o código de recuperação e sem os dados do navegador, uma sessão anônima não pode ser recuperada. Essa limitação evita associar projetos a dados pessoais.
+- O rate limit de rajada usa memória da instância do backend. O limite total de IA e os projetos ficam persistidos no banco; uma implantação com várias instâncias deve mover o rate limit de rajada para Redis ou serviço equivalente.
 - A IA depende de um serviço externo, de uma chave válida e dos limites/créditos da conta configurada.
 - As medidas são estimativas e os tamanhos P, M e G são referências editáveis, não padrões universais. Faça uma impressão de conferência em escala de 100% antes de produzir uma cartela.
 

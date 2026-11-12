@@ -14,6 +14,7 @@ config:
         linear_alpha: 32
       save:
         dtype: "bf16"
+        save_format: "safetensors"
         save_every: 50
         max_step_saves_to_keep: 2
         push_to_hub: false
@@ -27,7 +28,7 @@ config:
       train:
         batch_size: 1
         steps: 100
-        gradient_accumulation_steps: 2
+        gradient_accumulation: 2
         train_unet: true
         train_text_encoder: false
         gradient_checkpointing: true

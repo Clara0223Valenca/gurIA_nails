@@ -1,4 +1,4 @@
-﻿"collection","file_name","bytes","detected_format","width","height","aspect_ratio","pixel_format","alpha_min","alpha_max","has_real_transparency","sha256","dhash"
+"collection","file_name","bytes","detected_format","width","height","aspect_ratio","pixel_format","alpha_min","alpha_max","has_real_transparency","sha256","dhash"
 "canonical_rgba","guria-nails-0001.png","503444","png","1080","1350","0,8","Format32bppArgb","0","255","True","1ee69616ee5ba399d5cb667c5733fe95895b2643ec43c6e458582b2f8b05b181","00400c0e1c040000"
 "canonical_rgba","guria-nails-0002.png","887221","png","1080","1350","0,8","Format32bppArgb","0","255","True","89cc986fe243e869e1b430672a49ee6c7eff4a9a703c44d7a6d77cd006d0fbd3","000e0f37371e1000"
 "canonical_rgba","guria-nails-0003.png","2098595","png","1024","1536","0,66667","Format32bppArgb","0","254","True","1508607d75135cb23b2bd1618d7d8bb71a280a020dd73416f7840c86e8f29e94","36336737132f0e1c"

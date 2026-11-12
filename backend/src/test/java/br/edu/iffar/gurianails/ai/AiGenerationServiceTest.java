@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
+import br.edu.iffar.gurianails.event.EventSessionService;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +20,8 @@ class AiGenerationServiceTest {
         List<AiGenerationEntity> saved = new ArrayList<>();
         RecordingProvider provider = new RecordingProvider(true, List.of(RESULT));
 
-        List<String> results = new AiGenerationService(provider, recordingRepository(saved))
-                .run(new AiRequest("flores rosadas", 1, "Oval", "Anelar direito", 10.0, 14.0, "transparent", null), false);
+        List<String> results = new AiGenerationService(provider, recordingRepository(saved), mock(EventSessionService.class))
+                .run(new AiRequest("flores rosadas", 1, "Oval", "Anelar direito", 10.0, 14.0, "transparent", null), false, "session-test");
 
         assertEquals(List.of(RESULT), results);
         assertTrue(provider.called);
@@ -35,8 +37,8 @@ class AiGenerationServiceTest {
         RecordingProvider provider = new RecordingProvider(false, List.of());
 
         AiUnavailableException error = assertThrows(AiUnavailableException.class, () ->
-                new AiGenerationService(provider, recordingRepository(saved))
-                        .run(new AiRequest("flores", 1, "Oval", "Anelar", 10.0, 14.0, "transparent", null), false));
+                new AiGenerationService(provider, recordingRepository(saved), mock(EventSessionService.class))
+                        .run(new AiRequest("flores", 1, "Oval", "Anelar", 10.0, 14.0, "transparent", null), false, "session-test"));
 
         assertEquals("Provider de IA não configurado.", error.getMessage());
         assertFalse(provider.called);

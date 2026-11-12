@@ -1,5 +1,7 @@
 package br.edu.iffar.gurianails.project;
 
+import br.edu.iffar.gurianails.event.EventSessionRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.springframework.http.HttpStatus;
@@ -21,18 +23,19 @@ import tools.jackson.databind.ObjectMapper;
 @RequestMapping("/api/projects")
 public class ProjectController {
     private static final Pattern ID_PATTERN = Pattern.compile("[A-Za-z0-9._-]{1,80}");
-    private final ProjectRepository repository;
+    private final ProjectService projects;
     private final ObjectMapper objectMapper;
 
-    public ProjectController(ProjectRepository repository, ObjectMapper objectMapper) {
-        this.repository = repository;
+    public ProjectController(ProjectService projects, ObjectMapper objectMapper) {
+        this.projects = projects;
         this.objectMapper = objectMapper;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> list() {
+    public ResponseEntity<String> list(HttpServletRequest request) {
         try {
-            List<JsonNode> documents = repository.findAllByOrderByUpdatedAtDesc().stream()
+            String sessionId = EventSessionRequest.require(request).getId();
+            List<JsonNode> documents = projects.list(sessionId).stream()
                     .map(ProjectEntity::getDesignJson)
                     .map(this::readProject)
                     .toList();
@@ -43,7 +46,7 @@ public class ProjectController {
     }
 
     @PostMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> save(@PathVariable String id, @RequestBody String document) {
+    public ResponseEntity<String> save(@PathVariable String id, @RequestBody String document, HttpServletRequest request) {
         if (!ID_PATTERN.matcher(id).matches()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Identificador de projeto inválido.");
         if (document == null || document.length() > 18_000_000) throw new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE, "Projeto excede o limite aceito.");
         JsonNode project = readProject(document);
@@ -52,20 +55,19 @@ public class ProjectController {
         if (name.isEmpty()) name = "Meu design";
         if (name.length() > 80) name = name.substring(0, 80);
         boolean favorite = project.path("favorite").asBoolean(false);
-        ProjectEntity entity = repository.findById(id).orElse(null);
-        if (entity == null) entity = new ProjectEntity(id, name, favorite, document);
-        else entity.update(name, favorite, document);
         try {
-            return json(objectMapper.writeValueAsString(readProject(repository.save(entity).getDesignJson())));
+            String sessionId = EventSessionRequest.require(request).getId();
+            ProjectEntity entity = projects.save(sessionId, id, name, favorite, document);
+            return json(objectMapper.writeValueAsString(readProject(entity.getDesignJson())));
         } catch (JacksonException exception) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Não foi possível serializar o projeto salvo.");
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable String id, HttpServletRequest request) {
         if (!ID_PATTERN.matcher(id).matches()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Identificador de projeto inválido.");
-        repository.deleteById(id);
+        projects.delete(EventSessionRequest.require(request).getId(), id);
         return ResponseEntity.noContent().build();
     }
 

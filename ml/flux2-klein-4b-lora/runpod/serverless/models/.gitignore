@@ -1,0 +1,3 @@
+*.safetensors
+!.gitignore
+!README.md

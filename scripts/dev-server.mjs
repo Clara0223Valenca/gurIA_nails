@@ -4,7 +4,8 @@ import { extname, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(fileURLToPath(new URL('../frontend/', import.meta.url)));
-const port = Number(process.env.GURIA_FRONTEND_PORT || 4173);
+const port = Number(process.env.PORT || process.env.GURIA_FRONTEND_PORT || 4173);
+const host = process.env.GURIA_FRONTEND_HOST || '127.0.0.1';
 const apiBaseUrl = (process.env.GURIA_API_BASE_URL || 'http://localhost:8080/api').replace(/\/$/, '');
 const mime = new Map([
   ['.html', 'text/html; charset=utf-8'], ['.css', 'text/css; charset=utf-8'], ['.js', 'text/javascript; charset=utf-8'],
@@ -30,6 +31,6 @@ createServer((request, response) => {
   response.writeHead(200, { 'Content-Type': type, 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' });
   if (request.method === 'HEAD') response.end();
   else createReadStream(file).pipe(response);
-}).listen(port, '127.0.0.1', () => {
-  process.stdout.write(`Guria Nails frontend: http://127.0.0.1:${port}\nAPI: ${apiBaseUrl}\n`);
+}).listen(port, host, () => {
+  process.stdout.write(`Guria Nails frontend: http://${host}:${port}\nAPI: ${apiBaseUrl}\n`);
 });

@@ -1,0 +1,46 @@
+services:
+  - type: web
+    name: guria-nails-api
+    runtime: docker
+    dockerfilePath: backend/Dockerfile
+    dockerContext: backend
+    healthCheckPath: /api/health
+    envVars:
+      - key: SERVER_ADDRESS
+        value: 0.0.0.0
+      - key: DB_URL
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_MIGRATION_USER
+        sync: false
+      - key: DB_MIGRATION_PASSWORD
+        sync: false
+      - key: GURIA_FRONTEND_ORIGIN
+        sync: false
+      - key: GURIA_EVENT_CODE
+        sync: false
+      - key: GURIA_EVENT_ACCESS_TTL
+        value: PT24H
+      - key: GURIA_EVENT_AI_LIMIT
+        value: 10
+      - key: GURIA_EVENT_PROJECT_LIMIT
+        value: 20
+      - key: GURIA_AI_PROVIDER
+        value: pollinations
+      - key: GURIA_AI_API_KEY
+        sync: false
+
+  - type: web
+    name: guria-nails-web
+    runtime: node
+    buildCommand: node --check scripts/dev-server.mjs
+    startCommand: node scripts/dev-server.mjs
+    healthCheckPath: /
+    envVars:
+      - key: GURIA_FRONTEND_HOST
+        value: 0.0.0.0
+      - key: GURIA_API_BASE_URL
+        sync: false

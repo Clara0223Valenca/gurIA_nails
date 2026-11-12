@@ -1,78 +1,74 @@
 {
-    "status":  "PASS",
-    "checked_at":  "2026-11-07T20:11:16.7878083Z",
-    "canonical_images":  140,
-    "reviewed_rgba_images":  50,
-    "effective_training_images":  50,
-    "effective_training_captions":  50,
-    "approved_manifest_rows":  50,
-    "real_alpha_verified":  140,
-    "effective_backgrounds_verified":  50,
-    "exact_duplicate_groups":  0,
-    "near_duplicate_candidates":  15,
-    "algorithm":  "64-bit difference hash on white composite; Hamming \u003c= 5 and aspect-ratio delta \u003c= 0.08. Candidates require visual confirmation.",
-    "frequent_dimensions":  [
-                                {
-                                    "dimensions":  "1080x1350",
-                                    "count":  57
-                                },
-                                {
-                                    "dimensions":  "1254x1254",
-                                    "count":  17
-                                },
-                                {
-                                    "dimensions":  "1024x1536",
-                                    "count":  11
-                                },
-                                {
-                                    "dimensions":  "1536x1024",
-                                    "count":  2
-                                },
-                                {
-                                    "dimensions":  "941x1672",
-                                    "count":  2
-                                },
-                                {
-                                    "dimensions":  "391x418",
-                                    "count":  1
-                                },
-                                {
-                                    "dimensions":  "410x851",
-                                    "count":  1
-                                },
-                                {
-                                    "dimensions":  "657x1594",
-                                    "count":  1
-                                },
-                                {
-                                    "dimensions":  "490x1003",
-                                    "count":  1
-                                },
-                                {
-                                    "dimensions":  "547x1014",
-                                    "count":  1
-                                },
-                                {
-                                    "dimensions":  "1016x1024",
-                                    "count":  1
-                                },
-                                {
-                                    "dimensions":  "1087x1446",
-                                    "count":  1
-                                }
-                            ],
-    "pixel_formats":  [
-                          {
-                              "pixel_format":  "Format32bppArgb",
-                              "count":  140
-                          }
-                      ],
-    "error_count":  0,
-    "warning_count":  0,
-    "errors":  [
-
-               ],
-    "warnings":  [
-
-                 ]
+  "status": "PASS",
+  "checked_at": "2026-11-12T05:28:36.3518047Z",
+  "canonical_images": 140,
+  "reviewed_rgba_images": 50,
+  "effective_training_images": 50,
+  "effective_training_captions": 50,
+  "approved_manifest_rows": 50,
+  "real_alpha_verified": 140,
+  "effective_backgrounds_verified": 50,
+  "exact_duplicate_groups": 0,
+  "near_duplicate_candidates": 15,
+  "algorithm": "64-bit difference hash on white composite; Hamming <= 5 and aspect-ratio delta <= 0.08. Candidates require visual confirmation.",
+  "frequent_dimensions": [
+    {
+      "dimensions": "1080x1350",
+      "count": 57
+    },
+    {
+      "dimensions": "1254x1254",
+      "count": 17
+    },
+    {
+      "dimensions": "1024x1536",
+      "count": 11
+    },
+    {
+      "dimensions": "1536x1024",
+      "count": 2
+    },
+    {
+      "dimensions": "941x1672",
+      "count": 2
+    },
+    {
+      "dimensions": "1016x1024",
+      "count": 1
+    },
+    {
+      "dimensions": "1330x1182",
+      "count": 1
+    },
+    {
+      "dimensions": "1378x1141",
+      "count": 1
+    },
+    {
+      "dimensions": "1420x1108",
+      "count": 1
+    },
+    {
+      "dimensions": "1425x1104",
+      "count": 1
+    },
+    {
+      "dimensions": "1520x2303",
+      "count": 1
+    },
+    {
+      "dimensions": "216x307",
+      "count": 1
+    }
+  ],
+  "pixel_formats": [
+    {
+      "pixel_format": "Format32bppArgb",
+      "count": 140
+    }
+  ],
+  "error_count": 0,
+  "warning_count": 0,
+  "errors": [],
+  "warnings": []
 }

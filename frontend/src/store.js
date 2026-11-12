@@ -1,6 +1,22 @@
 const PROJECTS_KEY = 'guria-nails.projects.v1';
 const DRAFT_KEY = 'guria-nails.draft.v1';
 const NAIL_MEASUREMENTS_KEY = 'guria-nails.measurements.v1';
+let storageScope = 'no-session';
+
+function scopedKey(key) {
+  return `${key}.${storageScope}`;
+}
+
+export function setStorageScope(sessionId) {
+  const normalized = String(sessionId || '').trim();
+  storageScope = /^[a-z0-9-]{8,80}$/i.test(normalized) ? normalized : 'no-session';
+}
+
+export function clearSessionStorage() {
+  localStorage.removeItem(scopedKey(PROJECTS_KEY));
+  localStorage.removeItem(scopedKey(DRAFT_KEY));
+  localStorage.removeItem(scopedKey(NAIL_MEASUREMENTS_KEY));
+}
 
 export function createId() {
   return globalThis.crypto?.randomUUID?.() ?? `gn-${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -31,7 +47,7 @@ export function blankProject(name = 'Meu design') {
 
 export function loadProjects() {
   try {
-    const parsed = JSON.parse(localStorage.getItem(PROJECTS_KEY) || '[]');
+    const parsed = JSON.parse(localStorage.getItem(scopedKey(PROJECTS_KEY)) || '[]');
     return Array.isArray(parsed) ? parsed.filter((item) => item && item.id && Array.isArray(item.elements)) : [];
   } catch {
     return [];
@@ -39,16 +55,16 @@ export function loadProjects() {
 }
 
 export function saveProjects(projects) {
-  localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
+  localStorage.setItem(scopedKey(PROJECTS_KEY), JSON.stringify(projects));
 }
 
 export function saveDraft(project) {
-  localStorage.setItem(DRAFT_KEY, JSON.stringify(project));
+  localStorage.setItem(scopedKey(DRAFT_KEY), JSON.stringify(project));
 }
 
 export function loadDraft() {
   try {
-    const parsed = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null');
+    const parsed = JSON.parse(localStorage.getItem(scopedKey(DRAFT_KEY)) || 'null');
     return parsed && Array.isArray(parsed.elements) ? parsed : null;
   } catch {
     return null;
@@ -57,7 +73,7 @@ export function loadDraft() {
 
 export function loadNailMeasurements() {
   try {
-    const parsed = JSON.parse(localStorage.getItem(NAIL_MEASUREMENTS_KEY) || '[]');
+    const parsed = JSON.parse(localStorage.getItem(scopedKey(NAIL_MEASUREMENTS_KEY)) || '[]');
     if (!Array.isArray(parsed)) return [];
     return parsed.filter((item) => item && item.id && String(item.name || '').trim()
       && Number.isFinite(Number(item.widthMm)) && Number(item.widthMm) >= 1 && Number(item.widthMm) <= 40
@@ -85,13 +101,13 @@ export function upsertNailMeasurement(measurement, measurements = loadNailMeasur
     updatedAt: now
   };
   const next = [saved, ...measurements.filter((item) => item.id !== saved.id)];
-  localStorage.setItem(NAIL_MEASUREMENTS_KEY, JSON.stringify(next));
+  localStorage.setItem(scopedKey(NAIL_MEASUREMENTS_KEY), JSON.stringify(next));
   return next;
 }
 
 export function deleteNailMeasurement(measurementId, measurements = loadNailMeasurements()) {
   const next = measurements.filter((item) => item.id !== measurementId);
-  localStorage.setItem(NAIL_MEASUREMENTS_KEY, JSON.stringify(next));
+  localStorage.setItem(scopedKey(NAIL_MEASUREMENTS_KEY), JSON.stringify(next));
   return next;
 }
 

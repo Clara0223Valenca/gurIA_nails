@@ -1,4 +1,6 @@
-# RunPod: execução do início ao fim
+# Runpod: execução do início ao fim
+
+Comece pelo guia operacional de 30 minutos em [`RUNPOD_MANUAL.md`](RUNPOD_MANUAL.md). Ele separa treinamento, backup, worker temporário sem LoRA e ativação/validação do adaptador.
 
 ## Pod recomendado
 

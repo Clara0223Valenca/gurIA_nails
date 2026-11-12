@@ -16,6 +16,8 @@ public class ProjectEntity {
     private String id;
     @Column(name = "name", nullable = false, length = 80)
     private String name;
+    @Column(name = "event_session_id", columnDefinition = "CHAR(36)", length = 36)
+    private String eventSessionId;
     @Column(name = "is_favorite", nullable = false)
     private boolean favorite;
     @Column(name = "design_json", nullable = false, columnDefinition = "LONGTEXT")
@@ -27,14 +29,15 @@ public class ProjectEntity {
 
     protected ProjectEntity() {}
 
-    public ProjectEntity(String id, String name, boolean favorite, String designJson) {
-        this.id = id; this.name = name; this.favorite = favorite; this.designJson = designJson;
+    public ProjectEntity(String id, String eventSessionId, String name, boolean favorite, String designJson) {
+        this.id = id; this.eventSessionId = eventSessionId; this.name = name; this.favorite = favorite; this.designJson = designJson;
     }
 
     @PrePersist @PreUpdate
     void touch() { if (name == null || name.isBlank()) name = "Meu design"; }
 
     public String getId() { return id; }
+    public String getEventSessionId() { return eventSessionId; }
     public String getName() { return name; }
     public boolean isFavorite() { return favorite; }
     public String getDesignJson() { return designJson; }

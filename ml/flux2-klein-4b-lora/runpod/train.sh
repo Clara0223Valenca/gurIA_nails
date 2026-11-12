@@ -37,6 +37,8 @@ case "${PROFILE}" in
 esac
 
 mkdir -p "${PROJECT_ROOT}/output" "${PROJECT_ROOT}/environment" "${PROJECT_ROOT}/logs"
+export HF_HOME="${HF_HOME:-${PROJECT_ROOT}/cache/huggingface}"
+mkdir -p "${HF_HOME}"
 
 python "${PROJECT_ROOT}/scripts/validate_dataset.py" \
   "${PROJECT_ROOT}/dataset" \
@@ -54,4 +56,17 @@ python -m pip freeze > "${PROJECT_ROOT}/environment/requirements-lock.txt"
 
 echo "Treinando com perfil '${PROFILE}' e config '${CONFIG}'."
 cd "${AI_TOOLKIT_ROOT}"
-python run.py "${CONFIG}" 2>&1 | tee "${PROJECT_ROOT}/logs/train-${PROFILE}.log"
+STARTED_AT="$(date +%s)"
+set +e
+python -u run.py "${CONFIG}" 2>&1 | tee "${PROJECT_ROOT}/logs/train-${PROFILE}.log"
+TRAIN_EXIT_CODE="${PIPESTATUS[0]}"
+set -e
+FINISHED_AT="$(date +%s)"
+ELAPSED_SECONDS="$((FINISHED_AT - STARTED_AT))"
+{
+  echo "profile=${PROFILE}"
+  echo "elapsed_seconds=${ELAPSED_SECONDS}"
+  echo "exit_code=${TRAIN_EXIT_CODE}"
+} > "${PROJECT_ROOT}/environment/last-${PROFILE}-run.env"
+echo "Perfil '${PROFILE}' terminou com código ${TRAIN_EXIT_CODE} em ${ELAPSED_SECONDS} segundos."
+exit "${TRAIN_EXIT_CODE}"
