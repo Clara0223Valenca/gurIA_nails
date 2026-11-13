@@ -29,7 +29,12 @@ public class AiGenerationService {
             return images;
         } catch (RuntimeException exception) {
             String errorCode = exception instanceof AiProviderException ? "PROVIDER_ERROR" : "GENERATION_ERROR";
-            generations.save(new AiGenerationEntity(sessionId, operation, provider.providerName(), provider.modelName(), prompt, "FAILED", 0, errorCode));
+            try {
+                sessions.refundAiGenerations(sessionId, requestedUnits);
+                generations.save(new AiGenerationEntity(sessionId, operation, provider.providerName(), provider.modelName(), prompt, "FAILED", 0, errorCode));
+            } catch (RuntimeException bookkeepingFailure) {
+                exception.addSuppressed(bookkeepingFailure);
+            }
             throw exception;
         }
     }

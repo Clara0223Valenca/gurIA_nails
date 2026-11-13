@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import br.edu.iffar.gurianails.event.EventSessionService;
 import java.lang.reflect.Proxy;
@@ -45,6 +46,19 @@ class AiGenerationServiceTest {
         assertTrue(saved.isEmpty());
     }
 
+    @Test
+    void refundsTheReservedQuotaWhenTheProviderFails() {
+        EventSessionService sessions = mock(EventSessionService.class);
+        RecordingProvider provider = new RecordingProvider(true, List.of());
+        provider.failure = new AiProviderException("falha no worker");
+
+        assertThrows(AiProviderException.class, () ->
+                new AiGenerationService(provider, recordingRepository(new ArrayList<>()), sessions)
+                        .run(new AiRequest("flores", 2, "Oval", "Anelar", 10.0, 14.0, "transparent", null), false, "session-test"));
+
+        verify(sessions).refundAiGenerations("session-test", 2);
+    }
+
     private static AiGenerationRepository recordingRepository(List<AiGenerationEntity> saved) {
         return (AiGenerationRepository) Proxy.newProxyInstance(
                 AiGenerationRepository.class.getClassLoader(),
@@ -65,6 +79,7 @@ class AiGenerationServiceTest {
         private boolean called;
         private String negativePrompt;
         private AiRequest request;
+        private RuntimeException failure;
 
         private RecordingProvider(boolean available, List<String> results) {
             this.available = available;
@@ -80,6 +95,7 @@ class AiGenerationServiceTest {
             this.called = true;
             this.request = request;
             this.negativePrompt = negativePrompt;
+            if (failure != null) throw failure;
             return results;
         }
     }

@@ -14,7 +14,12 @@ spring:
     password: ${DB_PASSWORD:guria-local-only}
     hikari:
       maximum-pool-size: ${DB_POOL_SIZE:8}
-      connection-timeout: 5000
+      minimum-idle: ${DB_MIN_IDLE:1}
+      connection-timeout: 10000
+      validation-timeout: 5000
+      idle-timeout: 120000
+      max-lifetime: 600000
+      keepalive-time: 60000
   jpa:
     open-in-view: false
     hibernate:

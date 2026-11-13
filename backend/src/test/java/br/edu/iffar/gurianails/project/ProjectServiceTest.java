@@ -27,7 +27,9 @@ class ProjectServiceTest {
     @Test
     void refusesToOverwriteAnIdentifierOwnedByAnotherSession() {
         ProjectRepository projects = mock(ProjectRepository.class);
-        ProjectService service = new ProjectService(projects, mock(EventSessionRepository.class), 20);
+        EventSessionRepository sessions = mock(EventSessionRepository.class);
+        ProjectService service = new ProjectService(projects, sessions, 20);
+        when(sessions.lockById("session-a")).thenReturn(Optional.of(mock(EventSessionEntity.class)));
         when(projects.findByIdAndEventSessionId("project", "session-a")).thenReturn(Optional.empty());
         when(projects.existsById("project")).thenReturn(true);
 
@@ -51,5 +53,21 @@ class ProjectServiceTest {
                 () -> service.save("session-a", "new-project", "Nome", false, "{}"));
 
         assertEquals(409, error.getStatusCode().value());
+    }
+
+    @Test
+    void repeatedSaveUpdatesTheExistingProjectInsteadOfCompetingWithItsInsert() {
+        ProjectRepository projects = mock(ProjectRepository.class);
+        EventSessionRepository sessions = mock(EventSessionRepository.class);
+        ProjectService service = new ProjectService(projects, sessions, 20);
+        ProjectEntity existing = new ProjectEntity("project", "session-a", "Antigo", false, "{\"elements\":[]}");
+        when(sessions.lockById("session-a")).thenReturn(Optional.of(mock(EventSessionEntity.class)));
+        when(projects.findByIdAndEventSessionId("project", "session-a")).thenReturn(Optional.of(existing));
+        when(projects.save(existing)).thenReturn(existing);
+
+        ProjectEntity saved = service.save("session-a", "project", "Novo", true, "{\"elements\":[]}");
+
+        assertEquals(existing, saved);
+        verify(projects).save(existing);
     }
 }

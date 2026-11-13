@@ -28,13 +28,13 @@ public class ProjectService {
 
     @Transactional
     public ProjectEntity save(String sessionId, String id, String name, boolean favorite, String document) {
+        sessions.lockById(sessionId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sessão indisponível."));
         ProjectEntity entity = projects.findByIdAndEventSessionId(id, sessionId).orElse(null);
         if (entity == null) {
             if (projects.existsById(id)) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Esse identificador de projeto não está disponível.");
             }
-            sessions.lockById(sessionId)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sessão indisponível."));
             if (projects.countByEventSessionId(sessionId) >= projectLimit) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT,
                         "Você atingiu o limite de " + projectLimit + " projetos desta sessão.");

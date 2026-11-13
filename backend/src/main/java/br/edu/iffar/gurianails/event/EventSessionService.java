@@ -83,6 +83,11 @@ public class EventSessionService {
         }
     }
 
+    @Transactional
+    public void refundAiGenerations(String sessionId, int units) {
+        sessions.refundAiGenerations(sessionId, Math.max(1, units));
+    }
+
     @Transactional(readOnly = true)
     public EventSessionEntity current(String sessionId) {
         return sessions.findById(sessionId).filter(EventSessionEntity::isActive)

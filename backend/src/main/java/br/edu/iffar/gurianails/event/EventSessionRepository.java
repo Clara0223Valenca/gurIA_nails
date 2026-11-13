@@ -19,4 +19,10 @@ public interface EventSessionRepository extends JpaRepository<EventSessionEntity
     @Query("update EventSessionEntity session set session.aiGenerationCount = session.aiGenerationCount + :units "
             + "where session.id = :id and session.active = true and session.aiGenerationCount <= :maximum - :units")
     int reserveAiGenerations(@Param("id") String id, @Param("units") int units, @Param("maximum") int maximum);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("update EventSessionEntity session set session.aiGenerationCount = "
+            + "case when session.aiGenerationCount >= :units then session.aiGenerationCount - :units else 0 end "
+            + "where session.id = :id and session.active = true")
+    int refundAiGenerations(@Param("id") String id, @Param("units") int units);
 }

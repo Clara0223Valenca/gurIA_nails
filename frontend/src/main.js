@@ -42,6 +42,18 @@ const state = {
 };
 let printPreviewUrls = [];
 let printPreviewSequence = 0;
+const projectSaveQueues = new Map();
+const projectSaveVersions = new Map();
+let projectsSyncPromise = null;
+
+const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+
+function friendlyNetworkMessage(error, fallback = 'Não foi possível conectar ao servidor.') {
+  const message = String(error?.message || '');
+  if (error?.name === 'AbortError' || error?.name === 'TimeoutError') return 'O servidor demorou para responder. Tente novamente em alguns segundos.';
+  if (error instanceof TypeError || /failed to fetch|networkerror|load failed/i.test(message)) return 'A conexão com o servidor foi interrompida. Verifique a internet e tente novamente em alguns segundos.';
+  return message || fallback;
+}
 
 function loadEventAuth() {
   try {
@@ -87,7 +99,8 @@ async function refreshEventAccess() {
   if (!state.auth?.recoveryCode) return false;
   const response = await fetch(`${state.apiBase}/event/sessions/recover`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ recoveryCode: state.auth.recoveryCode })
+    body: JSON.stringify({ recoveryCode: state.auth.recoveryCode }),
+    signal: AbortSignal.timeout(12000)
   });
   if (!response.ok) return false;
   applyAccessPayload(await response.json());
@@ -95,19 +108,38 @@ async function refreshEventAccess() {
 }
 
 async function apiFetch(path, options = {}, retry = true) {
-  const headers = new Headers(options.headers || {});
+  const { retryNetwork, ...requestOptions } = options;
+  const headers = new Headers(requestOptions.headers || {});
   if (state.auth?.accessToken) headers.set('Authorization', `Bearer ${state.auth.accessToken}`);
-  let response = await fetch(`${state.apiBase}${path}`, { ...options, headers });
+  const method = String(requestOptions.method || 'GET').toUpperCase();
+  const idempotent = method === 'GET' || method === 'HEAD'
+    || (/^\/projects\//.test(path) && ['POST', 'DELETE'].includes(method));
+  const maxRetries = retryNetwork ?? (idempotent ? 1 : 0);
+  const execute = async () => {
+    let lastError;
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        const response = await fetch(`${state.apiBase}${path}`, { ...requestOptions, headers });
+        if (![502, 503, 504].includes(response.status) || attempt === maxRetries) return response;
+      } catch (error) {
+        lastError = error;
+        if (requestOptions.signal?.aborted || attempt === maxRetries) throw error;
+      }
+      await wait(600 * (attempt + 1));
+    }
+    throw lastError || new Error('A API não respondeu.');
+  };
+  let response = await execute();
   if (response.status === 401 && retry && await refreshEventAccess()) {
     headers.set('Authorization', `Bearer ${state.auth.accessToken}`);
-    response = await fetch(`${state.apiBase}${path}`, { ...options, headers });
+    response = await execute();
   }
   return response;
 }
 
 async function refreshSessionStatus() {
   try {
-    const response = await apiFetch('/event/session', { signal: AbortSignal.timeout(2500) });
+    const response = await apiFetch('/event/session', { signal: AbortSignal.timeout(12000) });
     if (!response.ok) return;
     const status = await response.json();
     state.sessionStatus = {
@@ -344,7 +376,7 @@ function saveCurrentProject() {
     }
     const result = upsertProject(state.project, state.projects);
     state.projects = result.projects; state.project = result.saved;
-    if (state.backendAvailable) {
+    if (state.auth) {
       remoteSave(state.project).then((saved) => { if (saved) notify('Projeto salvo no banco de dados e neste navegador.'); });
     } else notify('Projeto salvo neste navegador. O backend/MySQL ainda não está conectado.');
     render();
@@ -358,25 +390,39 @@ function renameCurrentDesign(project, requestedName) {
   if (state.projects.some((item) => item.id === project.id)) {
     state.projects = renameProject(project.id, name, state.projects);
     Object.assign(project, state.projects.find((item) => item.id === project.id));
-    if (state.backendAvailable) remoteSave(project);
+    if (state.auth) remoteSave(project);
   }
   state.project = project;
   persistDraft(project);
   return name;
 }
 
-async function remoteSave(project) {
-  try {
-    const response = await apiFetch(`/projects/${encodeURIComponent(project.id)}`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(project)
+async function remoteSave(project, { silent = false } = {}) {
+  if (!project?.id) return false;
+  const snapshot = structuredClone(project);
+  const version = (projectSaveVersions.get(snapshot.id) || 0) + 1;
+  projectSaveVersions.set(snapshot.id, version);
+  const previous = projectSaveQueues.get(snapshot.id) || Promise.resolve();
+  const pending = previous.catch(() => {}).then(async () => {
+    const response = await apiFetch(`/projects/${encodeURIComponent(snapshot.id)}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(snapshot)
     });
-    if (!response.ok) {
-      notify(await responseMessage(response, 'Não foi possível sincronizar o projeto.'), true);
-      return false;
-    }
+    if (!response.ok) throw new Error(await responseMessage(response, 'O servidor recusou a sincronização do projeto.'));
+    state.backendAvailable = true;
     if (state.sessionStatus) state.sessionStatus.projectCount = Math.max(state.sessionStatus.projectCount, state.projects.length);
-    return response.ok;
-  } catch { notify('O servidor não respondeu. O projeto continua salvo neste navegador.', true); return false; }
+    return true;
+  });
+  projectSaveQueues.set(snapshot.id, pending);
+  try {
+    return await pending;
+  } catch (error) {
+    if (!silent && projectSaveVersions.get(snapshot.id) === version) {
+      notify(`Projeto salvo neste navegador; sincronização pendente. ${friendlyNetworkMessage(error, 'O servidor não confirmou a gravação.')}`, true);
+    }
+    return false;
+  } finally {
+    if (projectSaveQueues.get(snapshot.id) === pending) projectSaveQueues.delete(snapshot.id);
+  }
 }
 
 async function remoteDelete(projectId) {
@@ -390,25 +436,29 @@ async function remoteDelete(projectId) {
 }
 
 async function syncProjects() {
-  try {
-    const response = await apiFetch('/projects', { signal: AbortSignal.timeout(3500) });
-    if (!response.ok) return;
-    const remoteRows = await response.json();
-    if (!Array.isArray(remoteRows)) return;
-    state.backendAvailable = true;
-    const remote = new Map(remoteRows.filter((project) => project?.id && Array.isArray(project.elements)).map((project) => [project.id, project]));
-    const local = new Map(state.projects.map((project) => [project.id, project]));
-    for (const project of local.values()) {
-      const serverProject = remote.get(project.id);
-      const localIsNewer = !serverProject || new Date(project.updatedAt || 0) > new Date(serverProject.updatedAt || 0);
-      if (localIsNewer) await remoteSave(project);
-      else local.set(project.id, serverProject);
-    }
-    for (const project of remote.values()) if (!local.has(project.id)) local.set(project.id, project);
-    state.projects = [...local.values()].sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''));
-    if (state.sessionStatus) state.sessionStatus.projectCount = state.projects.length;
-    saveProjects(state.projects);
-  } catch { state.backendAvailable = false; }
+  if (projectsSyncPromise) return projectsSyncPromise;
+  projectsSyncPromise = (async () => {
+    try {
+      const response = await apiFetch('/projects', { signal: AbortSignal.timeout(15000) });
+      if (!response.ok) { state.backendAvailable = false; return; }
+      const remoteRows = await response.json();
+      if (!Array.isArray(remoteRows)) return;
+      state.backendAvailable = true;
+      const remote = new Map(remoteRows.filter((project) => project?.id && Array.isArray(project.elements)).map((project) => [project.id, project]));
+      const local = new Map(state.projects.map((project) => [project.id, project]));
+      for (const project of local.values()) {
+        const serverProject = remote.get(project.id);
+        const localIsNewer = !serverProject || new Date(project.updatedAt || 0) > new Date(serverProject.updatedAt || 0);
+        if (localIsNewer) await remoteSave(project, { silent: true });
+        else local.set(project.id, serverProject);
+      }
+      for (const project of remote.values()) if (!local.has(project.id)) local.set(project.id, project);
+      state.projects = [...local.values()].sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''));
+      if (state.sessionStatus) state.sessionStatus.projectCount = state.projects.length;
+      saveProjects(state.projects);
+    } catch { state.backendAvailable = false; }
+  })().finally(() => { projectsSyncPromise = null; });
+  return projectsSyncPromise;
 }
 
 function ensurePrintOptions() {
@@ -502,16 +552,22 @@ async function generateWithAi(prompt = state.prompt, { improve = false, project 
     const png = await createStickerPng(project, state.settings.print.dpi);
     referenceImage = await blobToDataUrl(png);
   }
-  const response = await apiFetch(endpoint, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      prompt: prompt.trim(), quantity: requested,
-      format: project.format, finger: project.finger,
-      widthMm: project.widthMm, lengthMm: project.lengthMm,
-      background: project.backgroundMode === 'transparent' ? 'transparent' : project.backgroundColor,
-      referenceImage,
-    })
-  });
+  let response;
+  try {
+    response = await apiFetch(endpoint, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prompt: prompt.trim(), quantity: requested,
+        format: project.format, finger: project.finger,
+        widthMm: project.widthMm, lengthMm: project.lengthMm,
+        background: project.backgroundMode === 'transparent' ? 'transparent' : project.backgroundColor,
+        referenceImage,
+      }),
+      retryNetwork: 0
+    });
+  } catch (error) {
+    throw new Error(`${friendlyNetworkMessage(error)} A geração não será reenviada automaticamente para evitar cobrança duplicada.`);
+  }
   let payload;
   try { payload = await response.json(); } catch { throw new Error('O serviço de IA respondeu em um formato inválido.'); }
   if (!response.ok) throw new Error(payload.message || payload.detail || `O serviço de IA respondeu com erro (${response.status}).`);
@@ -630,7 +686,7 @@ async function initializeSession(status = state.sessionStatus) {
   if (stored) state.project = structuredClone(stored);
   window.guriaSettings = state.settings;
   try {
-    const response = await apiFetch('/ai/status', { signal: AbortSignal.timeout(2500) });
+    const response = await apiFetch('/ai/status', { signal: AbortSignal.timeout(12000) });
     const aiStatus = response.ok ? await response.json() : null;
     state.aiStatusConnected = Boolean(aiStatus);
     state.aiProvider = String(aiStatus?.provider || '');
@@ -650,7 +706,7 @@ async function createEventSession(form) {
   try {
     const response = await fetch(`${state.apiBase}/event/sessions`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ eventCode })
+      body: JSON.stringify({ eventCode }), signal: AbortSignal.timeout(20000)
     });
     if (!response.ok) throw new Error(await responseMessage(response, 'Não foi possível validar o código do evento.'));
     const payload = await response.json();
@@ -659,7 +715,7 @@ async function createEventSession(form) {
     state.entryBusy = false;
     app.innerHTML = recoveryHandoffView();
   } catch (error) {
-    state.entryBusy = false; state.entryError = error.message || 'Não foi possível entrar no evento.';
+    state.entryBusy = false; state.entryError = friendlyNetworkMessage(error, 'Não foi possível entrar no evento.');
     app.innerHTML = eventEntryView();
   }
 }
@@ -669,7 +725,8 @@ async function recoverEventSession(form) {
   state.entryBusy = true; state.entryError = ''; app.innerHTML = eventEntryView();
   try {
     const response = await fetch(`${state.apiBase}/event/sessions/recover`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ recoveryCode })
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ recoveryCode }),
+      signal: AbortSignal.timeout(20000)
     });
     if (!response.ok) throw new Error(await responseMessage(response, 'Código de recuperação inválido.'));
     applyAccessPayload(await response.json(), recoveryCode, true);
@@ -677,7 +734,7 @@ async function recoverEventSession(form) {
     await initializeSession();
     notify('Seus projetos foram recuperados nesta sessão.');
   } catch (error) {
-    state.entryBusy = false; state.entryError = error.message || 'Não foi possível recuperar a sessão.';
+    state.entryBusy = false; state.entryError = friendlyNetworkMessage(error, 'Não foi possível recuperar a sessão.');
     app.innerHTML = eventEntryView();
   }
 }
@@ -720,7 +777,7 @@ function downloadRecoveryReminder() {
 
 async function startNewEventSession() {
   try {
-    const response = await apiFetch('/event/session', { signal: AbortSignal.timeout(3500) });
+    const response = await apiFetch('/event/session', { signal: AbortSignal.timeout(12000) });
     if (!response.ok) throw new Error();
   } catch {
     notify('Não comece uma nova sessão enquanto o servidor estiver indisponível. Exporte um backup e tente novamente.', true);
@@ -753,7 +810,7 @@ app.addEventListener('click', async (event) => {
     remoteSave(state.projects[0]); notify('Cópia criada.'); render(); return;
   }
   if (target.dataset.renameProject) { const project = state.projects.find((item) => item.id === target.dataset.renameProject); const name = window.prompt('Novo nome para o projeto:', project?.name || ''); if (name !== null) { try { state.projects = renameProject(target.dataset.renameProject, name, state.projects); remoteSave(state.projects.find((item) => item.id === target.dataset.renameProject)); render(); } catch (error) { notify(error.message, true); } } return; }
-  if (target.dataset.deleteProject) { const project = state.projects.find((item) => item.id === target.dataset.deleteProject); if (project && window.confirm(`Excluir “${project.name}”? Esta ação não pode ser desfeita.`)) { state.projects = deleteProject(project.id, state.projects); saveProjects(state.projects); if (state.backendAvailable) remoteDelete(project.id); notify('Projeto excluído.'); render(); } return; }
+  if (target.dataset.deleteProject) { const project = state.projects.find((item) => item.id === target.dataset.deleteProject); if (project && window.confirm(`Excluir “${project.name}”? Esta ação não pode ser desfeita.`)) { state.projects = deleteProject(project.id, state.projects); saveProjects(state.projects); if (state.auth) remoteDelete(project.id); notify('Projeto excluído.'); render(); } return; }
   if (target.dataset.printProject) { const project = state.projects.find((item) => item.id === target.dataset.printProject); if (project) openPrint(structuredClone(project)); return; }
   if (target.dataset.cartRemove) {
     const item = state.printItems.find((entry) => entry.id === target.dataset.cartRemove);
@@ -870,7 +927,7 @@ async function start() {
     if (!state.auth) { app.innerHTML = eventEntryView(); return; }
     if (!state.auth.recoveryAcknowledged && state.auth.recoveryCode) { app.innerHTML = recoveryHandoffView(); return; }
     try {
-      const response = await apiFetch('/event/session', { signal: AbortSignal.timeout(3500) });
+      const response = await apiFetch('/event/session', { signal: AbortSignal.timeout(15000) });
       if (!response.ok) throw new Error(await responseMessage(response, 'Sua sessão precisa ser recuperada.'));
       await initializeSession(await response.json());
     } catch (error) {
@@ -882,5 +939,15 @@ async function start() {
     app.innerHTML = `<main class="startup-error"><img src="/assets/guria-wordmark.png" alt="Guria Nails"/><h1>Não foi possível abrir o ateliê</h1><p>Verifique se você iniciou o servidor local na pasta do projeto.</p><button type="button" class="button button-primary" onclick="location.reload()">Tentar novamente</button></main>`;
   }
 }
+
+window.addEventListener('online', () => {
+  if (state.auth) syncProjects();
+});
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && state.auth) syncProjects();
+});
+setInterval(() => {
+  if (state.auth && !state.busy) syncProjects();
+}, 30000);
 
 start();
