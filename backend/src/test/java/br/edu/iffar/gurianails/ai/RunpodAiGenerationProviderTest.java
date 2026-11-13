@@ -20,12 +20,15 @@ class RunpodAiGenerationProviderTest {
 
         String prompt = RunpodAiGenerationProvider.buildPrompt(request);
 
-        assertTrue(prompt.contains("print-ready nail sticker/decal artwork"));
-        assertTrue(prompt.contains("flat 2D graphic"));
-        assertTrue(prompt.contains("Never show hands, fingers, fingernails"));
-        assertTrue(prompt.contains("glitter, highlights, surrounding shadows"));
-        assertTrue(prompt.contains("reflections, depth or perspective"));
-        assertTrue(prompt.endsWith("gato usando óculos"));
+        assertTrue(prompt.contains("Primary subject or theme"));
+        assertTrue(prompt.contains("gato usando óculos"));
+        assertTrue(prompt.contains("flat 2D vector-style illustration"));
+        assertTrue(prompt.contains("matte solid-color fills"));
+        assertTrue(prompt.contains("uniform pure white background"));
+        assertTrue(prompt.contains("zero visual depth"));
+        assertFalse(prompt.contains("hands"));
+        assertFalse(prompt.contains("fingernails"));
+        assertFalse(prompt.contains("nail-polish"));
         assertTrue(prompt.length() <= 1200);
     }
 
@@ -44,6 +47,6 @@ class RunpodAiGenerationProviderTest {
         String prompt = RunpodAiGenerationProvider.buildPrompt(request);
 
         assertFalse(prompt.toLowerCase().contains("naildecalstyle"));
-        assertTrue(prompt.endsWith("flores azuis"));
+        assertTrue(prompt.contains("flores azuis"));
     }
 }

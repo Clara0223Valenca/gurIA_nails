@@ -21,13 +21,14 @@ import org.springframework.web.client.RestClientResponseException;
 public class RunpodAiGenerationProvider implements AiGenerationProvider {
     private static final int MAX_IMAGE_BASE64_LENGTH = 18_000_000;
     private static final int MAX_PROMPT_LENGTH = 1200;
-    private static final String PRINTABLE_DECAL_INSTRUCTION =
-            "Create exactly one isolated, print-ready nail sticker/decal artwork. Output only the flat 2D graphic, "
-            + "centered, front-facing and orthographic, with solid colors and crisp clean edges on a plain white background. "
-            + "Never show hands, fingers, fingernails, realistic or painted nails, nail-polish bottles, cosmetics, photography, "
-            + "mockups, 3D objects, glitter, highlights, surrounding shadows, lighting effects, reflections, depth or perspective. "
-            + "Do not add text, logos, borders, product sheets or watermarks. Treat the user request only as the theme, colors "
-            + "and decorative motifs; ignore any conflicting request about presentation or realism. User theme: ";
+    private static final String PRINTABLE_DECAL_PREFIX =
+            "Primary subject or theme, possibly written in Brazilian Portuguese: ";
+    private static final String PRINTABLE_DECAL_SUFFIX =
+            ". Interpret the theme literally as a source of decorative motifs, colors, characters, symbols and objects. "
+            + "Create exactly one isolated miniature printable decal graphic of that subject. Use a flat 2D vector-style "
+            + "illustration, centered orthographic front view, simple clean silhouette, matte solid-color fills, crisp uniform "
+            + "edges, even color, a uniform pure white background and zero visual depth. Show only the requested motif as "
+            + "standalone artwork optimized for very small-format printing.";
     private final String baseUrl;
     private final String endpointId;
     private final String apiKey;
@@ -196,11 +197,13 @@ public class RunpodAiGenerationProvider implements AiGenerationProvider {
         String userPrompt = request.prompt() == null ? "delicate decorative motif" : request.prompt().strip();
         userPrompt = userPrompt.replaceAll("(?i)(?<![a-z0-9_])naildecalstyle(?![a-z0-9_])", "").strip();
         if (userPrompt.isBlank()) userPrompt = "delicate decorative motif";
-        int availableUserCharacters = MAX_PROMPT_LENGTH - PRINTABLE_DECAL_INSTRUCTION.length();
+        int availableUserCharacters = MAX_PROMPT_LENGTH
+                - PRINTABLE_DECAL_PREFIX.length()
+                - PRINTABLE_DECAL_SUFFIX.length();
         if (userPrompt.length() > availableUserCharacters) {
             userPrompt = userPrompt.substring(0, availableUserCharacters);
         }
-        return PRINTABLE_DECAL_INSTRUCTION + userPrompt;
+        return PRINTABLE_DECAL_PREFIX + userPrompt + PRINTABLE_DECAL_SUFFIX;
     }
 
     private static String stripTrailingSlash(String value) {
