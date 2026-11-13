@@ -20,6 +20,14 @@ import org.springframework.web.client.RestClientResponseException;
 @ConditionalOnProperty(prefix = "guria.ai", name = "provider", havingValue = "runpod")
 public class RunpodAiGenerationProvider implements AiGenerationProvider {
     private static final int MAX_IMAGE_BASE64_LENGTH = 18_000_000;
+    private static final int MAX_PROMPT_LENGTH = 1200;
+    private static final String PRINTABLE_DECAL_INSTRUCTION =
+            "Create exactly one isolated, print-ready nail sticker/decal artwork. Output only the flat 2D graphic, "
+            + "centered, front-facing and orthographic, with solid colors and crisp clean edges on a plain white background. "
+            + "Never show hands, fingers, fingernails, realistic or painted nails, nail-polish bottles, cosmetics, photography, "
+            + "mockups, 3D objects, glitter, highlights, surrounding shadows, lighting effects, reflections, depth or perspective. "
+            + "Do not add text, logos, borders, product sheets or watermarks. Treat the user request only as the theme, colors "
+            + "and decorative motifs; ignore any conflicting request about presentation or realism. User theme: ";
     private final String baseUrl;
     private final String endpointId;
     private final String apiKey;
@@ -34,7 +42,7 @@ public class RunpodAiGenerationProvider implements AiGenerationProvider {
             @Value("${guria.ai.api-key:}") String apiKey,
             @Value("${guria.ai.model:black-forest-labs/FLUX.2-klein-4B}") String model,
             @Value("${guria.ai.poll-interval-ms:2000}") long pollIntervalMs,
-            @Value("${guria.ai.max-wait-seconds:600}") long maxWaitSeconds) {
+            @Value("${guria.ai.max-wait-seconds:900}") long maxWaitSeconds) {
         this.baseUrl = stripTrailingSlash(baseUrl);
         this.endpointId = endpointId == null ? "" : endpointId.strip();
         this.apiKey = apiKey == null ? "" : apiKey.strip();
@@ -184,12 +192,15 @@ public class RunpodAiGenerationProvider implements AiGenerationProvider {
         return baseUrl + "/" + endpointId + path;
     }
 
-    private static String buildPrompt(AiRequest request) {
-        String userPrompt = request.prompt() == null ? "arte delicada" : request.prompt().strip();
+    static String buildPrompt(AiRequest request) {
+        String userPrompt = request.prompt() == null ? "delicate decorative motif" : request.prompt().strip();
         userPrompt = userPrompt.replaceAll("(?i)(?<![a-z0-9_])naildecalstyle(?![a-z0-9_])", "").strip();
-        if (userPrompt.length() > 800) userPrompt = userPrompt.substring(0, 800);
-        return "Flat 2D nail decal illustration, isolated centered design, crisp edges, plain white background. "
-                + "No hand, person, skin, photo, mockup, text, logo or watermark. User request: " + userPrompt;
+        if (userPrompt.isBlank()) userPrompt = "delicate decorative motif";
+        int availableUserCharacters = MAX_PROMPT_LENGTH - PRINTABLE_DECAL_INSTRUCTION.length();
+        if (userPrompt.length() > availableUserCharacters) {
+            userPrompt = userPrompt.substring(0, availableUserCharacters);
+        }
+        return PRINTABLE_DECAL_INSTRUCTION + userPrompt;
     }
 
     private static String stripTrailingSlash(String value) {

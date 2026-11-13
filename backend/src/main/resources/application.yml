@@ -47,4 +47,4 @@ guria:
     generate-path: ${GURIA_AI_GENERATE_PATH:/generate}
     improve-path: ${GURIA_AI_IMPROVE_PATH:/improve}
     poll-interval-ms: ${GURIA_AI_POLL_INTERVAL_MS:2000}
-    max-wait-seconds: ${GURIA_AI_MAX_WAIT_SECONDS:600}
+    max-wait-seconds: ${GURIA_AI_MAX_WAIT_SECONDS:900}
