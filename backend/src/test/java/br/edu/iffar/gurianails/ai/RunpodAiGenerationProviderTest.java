@@ -22,6 +22,9 @@ class RunpodAiGenerationProviderTest {
 
         assertTrue(prompt.contains("Primary subject or theme"));
         assertTrue(prompt.contains("gato usando óculos"));
+        assertTrue(prompt.contains("Preserve every explicitly named color exactly"));
+        assertTrue(prompt.contains("bind each named color to the same motif"));
+        assertTrue(prompt.contains("use those hues as the required motif palette"));
         assertTrue(prompt.contains("flat 2D vector-style illustration"));
         assertTrue(prompt.contains("matte solid-color fills"));
         assertTrue(prompt.contains("uniform pure white background"));

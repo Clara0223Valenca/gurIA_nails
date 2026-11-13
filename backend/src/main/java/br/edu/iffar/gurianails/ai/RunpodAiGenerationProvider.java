@@ -24,7 +24,10 @@ public class RunpodAiGenerationProvider implements AiGenerationProvider {
     private static final String PRINTABLE_DECAL_PREFIX =
             "Primary subject or theme, possibly written in Brazilian Portuguese: ";
     private static final String PRINTABLE_DECAL_SUFFIX =
-            ". Interpret the theme literally as a source of decorative motifs, colors, characters, symbols and objects. "
+            ". Preserve every explicitly named color exactly and bind each named color to the same motif, character, object "
+            + "or detail specified by the user. When colors are named, use those hues as the required motif palette; only when "
+            + "no color is provided may you choose a cohesive palette. Interpret the theme literally as a source of decorative "
+            + "motifs, colors, characters, symbols and objects. "
             + "Create exactly one isolated miniature printable decal graphic of that subject. Use a flat 2D vector-style "
             + "illustration, centered orthographic front view, simple clean silhouette, matte solid-color fills, crisp uniform "
             + "edges, even color, a uniform pure white background and zero visual depth. Show only the requested motif as "
