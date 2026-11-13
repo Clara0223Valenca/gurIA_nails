@@ -42,6 +42,9 @@ guria:
     provider: ${GURIA_AI_PROVIDER:pollinations}
     base-url: ${GURIA_AI_BASE_URL:https://gen.pollinations.ai}
     api-key: ${GURIA_AI_API_KEY:}
+    endpoint-id: ${GURIA_AI_ENDPOINT_ID:}
     model: ${GURIA_AI_MODEL:black-forest-labs/flux.2-klein-4b}
     generate-path: ${GURIA_AI_GENERATE_PATH:/generate}
     improve-path: ${GURIA_AI_IMPROVE_PATH:/improve}
+    poll-interval-ms: ${GURIA_AI_POLL_INTERVAL_MS:2000}
+    max-wait-seconds: ${GURIA_AI_MAX_WAIT_SECONDS:600}

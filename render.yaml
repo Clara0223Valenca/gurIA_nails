@@ -29,9 +29,17 @@ services:
       - key: GURIA_EVENT_PROJECT_LIMIT
         value: 20
       - key: GURIA_AI_PROVIDER
-        value: pollinations
+        value: runpod
+      - key: GURIA_AI_BASE_URL
+        value: https://api.runpod.ai/v2
+      - key: GURIA_AI_ENDPOINT_ID
+        value: a5v1by47re8fd3
       - key: GURIA_AI_API_KEY
         sync: false
+      - key: GURIA_AI_MODEL
+        value: black-forest-labs/FLUX.2-klein-4B
+      - key: GURIA_AI_MAX_WAIT_SECONDS
+        value: 600
 
   - type: web
     name: guria-nails-web
